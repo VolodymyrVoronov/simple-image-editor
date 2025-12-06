@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Cropper from "react-easy-crop";
+import Cropper, { type Area } from "react-easy-crop";
 
 import { useImageStore } from "./store/imageStore";
 import type { Step } from "./types";
@@ -28,6 +28,7 @@ const App = () => {
   const stepperRef = useRef<Generator<Step, never, number | undefined> | null>(
     null,
   );
+
   useEffect(() => {
     // re-create generator whenever app mounts
     stepperRef.current = createStepperInstance(step);
@@ -42,6 +43,13 @@ const App = () => {
     },
     [setStep],
   );
+
+  const prev = useCallback(() => {
+    if (stepperRef.current) {
+      const value = stepperRef.current.next(step - 1).value as Step;
+      setStep(value);
+    }
+  }, [step, setStep]);
 
   const next = useCallback(() => {
     if (stepperRef.current) {
@@ -69,9 +77,9 @@ const App = () => {
   // Crop state (react-easy-crop uses relative values)
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-  const onCropComplete = useCallback((_: any, pixels: any) => {
+  const onCropComplete = useCallback((_: Area, pixels: Area) => {
     setCroppedAreaPixels(pixels);
   }, []);
 
@@ -178,6 +186,9 @@ const App = () => {
           </ol>
 
           <div style={{ marginTop: 12 }}>
+            <Button onClick={prev} style={{ marginRight: 8 }}>
+              Previous (generator)
+            </Button>
             <Button onClick={next}>Next (generator)</Button>
             <Button onClick={resetAll} style={{ marginLeft: 8 }}>
               Reset
@@ -378,9 +389,9 @@ const App = () => {
                   </div>
 
                   <div style={{ marginTop: 12 }}>
-                    <Button onClick={() => jumpTo(3)}>Go to Save</Button>
-                    <Button onClick={() => jumpTo(1)} style={{ marginLeft: 8 }}>
-                      Back to Crop
+                    <Button onClick={() => jumpTo(1)}>Back to Crop</Button>
+                    <Button onClick={() => jumpTo(3)} style={{ marginLeft: 8 }}>
+                      Go to Save
                     </Button>
                   </div>
                 </div>
@@ -428,15 +439,14 @@ const App = () => {
                   </div>
 
                   <div style={{ marginTop: 12 }}>
+                    <Button onClick={() => jumpTo(2)}>Back to Effects</Button>
                     <Button
                       onClick={async () => {
                         await onSave();
                       }}
+                      style={{ marginLeft: 8 }}
                     >
                       Download
-                    </Button>
-                    <Button onClick={() => jumpTo(2)} style={{ marginLeft: 8 }}>
-                      Back to Effects
                     </Button>
                   </div>
                 </div>
