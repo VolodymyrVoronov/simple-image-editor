@@ -1,6 +1,7 @@
+import { useId } from "react";
+
 import { Slider } from "@/components/ui/slider";
 import { Label } from "./ui/label";
-import { useId } from "react";
 
 export interface IRangeProps {
   label: string;
@@ -28,6 +29,7 @@ const Range = ({ label, value, min, max, step, onChange }: IRangeProps) => {
         step={step}
         value={[value]}
         onValueChange={(value) => onChange(value[0])}
+        aria-label={label}
       />
     </div>
   );

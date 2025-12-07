@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import Cropper, { type Area } from "react-easy-crop";
+import { useCallback, useEffect, useRef } from "react";
 
 import { useImageStore } from "./store/imageStore";
 import type { Step } from "./types";
@@ -10,6 +9,7 @@ import ImageUploader from "./components/ImageUploader";
 import Range from "./components/Range";
 import Steps from "./components/Steps";
 import { Button } from "./components/ui/button";
+import ImageCropper from "./components/ImageCropper";
 
 const App = () => {
   const {
@@ -21,7 +21,6 @@ const App = () => {
     quality,
 
     setStep,
-    setCropArea,
     setEffects,
     setFormat,
     setQuality,
@@ -61,29 +60,6 @@ const App = () => {
       setStep(value);
     }
   }, [setStep]);
-
-  // Crop state (react-easy-crop uses relative values)
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
-
-  const onCropComplete = useCallback((_: Area, pixels: Area) => {
-    setCroppedAreaPixels(pixels);
-  }, []);
-
-  const applyCrop = useCallback(() => {
-    if (!imageSrc || !croppedAreaPixels) return;
-    // save crop area in pixel coordinates
-    setCropArea({
-      x: croppedAreaPixels.x,
-      y: croppedAreaPixels.y,
-      width: croppedAreaPixels.width,
-      height: croppedAreaPixels.height,
-    });
-    jumpTo(2);
-  }, [imageSrc, croppedAreaPixels, setCropArea, jumpTo]);
-
-  const skipCrop = useCallback(() => jumpTo(2), [jumpTo]);
 
   // apply effects handler uses store directly when saving
 
@@ -147,49 +123,7 @@ const App = () => {
         {step === 0 && <ImageUploader jumpTo={jumpTo} />}
 
         {/* Crop */}
-        {step === 1 && (
-          <section>
-            <h2>Crop</h2>
-            {imageSrc ? (
-              <div className="relative h-[50svh] w-full">
-                <Cropper
-                  image={imageSrc}
-                  crop={crop}
-                  zoom={zoom}
-                  aspect={4 / 3}
-                  onCropChange={setCrop}
-                  onZoomChange={setZoom}
-                  onCropComplete={onCropComplete}
-                />
-              </div>
-            ) : (
-              <div>No image uploaded yet.</div>
-            )}
-
-            <div style={{ marginTop: 8 }}>
-              <label>Zoom</label>
-              <input
-                type="range"
-                min={1}
-                max={3}
-                step={0.01}
-                value={zoom}
-                onChange={(e) => setZoom(Number(e.target.value))}
-              />
-            </div>
-            <div style={{ marginTop: 8 }}>
-              <Button onClick={applyCrop} disabled={!imageSrc}>
-                Apply Crop
-              </Button>
-              <Button onClick={skipCrop} style={{ marginLeft: 8 }}>
-                Skip Crop
-              </Button>
-              <Button onClick={() => jumpTo(0)} style={{ marginLeft: 8 }}>
-                Back to Upload
-              </Button>
-            </div>
-          </section>
-        )}
+        {step === 1 && <ImageCropper jumpTo={jumpTo} />}
 
         {/* Effects */}
         {step === 2 && (

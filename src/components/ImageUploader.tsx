@@ -1,5 +1,5 @@
 import { Crop, MoveRight, RedoDot, Sparkles } from "lucide-react";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { useImageStore } from "@/store/imageStore";
@@ -56,11 +56,11 @@ const ImageUploader = ({ jumpTo }: IImageUploaderProps) => {
           />
 
           <div className="flex flex-row justify-center gap-2">
-            <Button onClick={() => jumpTo(1)}>
+            <Button onClick={() => jumpTo(1)} aria-label="Go to Crop">
               Go to Crop
               <MoveRight /> <Crop />
             </Button>
-            <Button onClick={() => jumpTo(2)}>
+            <Button onClick={() => jumpTo(2)} aria-label="Skip to Effects">
               Skip to Effects <RedoDot /> <Sparkles />
             </Button>
           </div>
@@ -70,4 +70,4 @@ const ImageUploader = ({ jumpTo }: IImageUploaderProps) => {
   );
 };
 
-export default ImageUploader;
+export default memo(ImageUploader);
