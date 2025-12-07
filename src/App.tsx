@@ -71,7 +71,7 @@ const App = () => {
         {step === 3 && <Save jumpTo={jumpTo} />}
       </main>
 
-      <footer>
+      <footer className="flex w-full justify-center">
         <small>
           All happens in the browser. No data is sent to the server.
         </small>
