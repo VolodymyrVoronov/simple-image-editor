@@ -69,7 +69,7 @@ export async function renderToCanvas(
 
   canvas.width = sWidth;
   canvas.height = sHeight;
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
   ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
 
   // -------------------------------
@@ -78,7 +78,7 @@ export async function renderToCanvas(
   if (effects.pixelate > 0) {
     const px = Math.max(1, Math.floor(effects.pixelate));
     const tmp = document.createElement("canvas");
-    const tctx = tmp.getContext("2d")!;
+    const tctx = tmp.getContext("2d", { willReadFrequently: true })!;
     tmp.width = Math.max(1, Math.floor(canvas.width / px));
     tmp.height = Math.max(1, Math.floor(canvas.height / px));
 
@@ -274,7 +274,7 @@ function buildKernel(effects: IImageState["effects"]) {
 // ------------------------------------------------
 
 function applyConvolution(canvas: HTMLCanvasElement, kernel: number[]) {
-  const ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
   const w = canvas.width;
   const h = canvas.height;
 
