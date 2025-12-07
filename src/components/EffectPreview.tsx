@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import type { IImageState } from "@/types";
 import { renderToCanvas } from "@/utils";
@@ -44,4 +44,4 @@ const EffectPreview = ({
   );
 };
 
-export default EffectPreview;
+export default memo(EffectPreview);

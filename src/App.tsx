@@ -5,11 +5,11 @@ import type { Step } from "./types";
 import { createStepperInstance, renderToCanvas } from "./utils";
 
 import EffectPreview from "./components/EffectPreview";
+import Effects from "./components/Effects";
+import ImageCropper from "./components/ImageCropper";
 import ImageUploader from "./components/ImageUploader";
 import Steps from "./components/Steps";
 import { Button } from "./components/ui/button";
-import ImageCropper from "./components/ImageCropper";
-import Effects from "./components/Effects";
 
 const App = () => {
   const {
@@ -84,36 +84,9 @@ const App = () => {
     });
   }, [imageSrc, cropArea, effects, format, quality]);
 
-  // // Reset all
-  // const resetAll = useCallback(() => {
-  //   setImage(null);
-  //   setCropArea(null);
-  //   setEffects({
-  //     brightness: 1,
-  //     contrast: 0,
-  //     saturation: 1,
-  //     grayscale: 0,
-  //     pixelate: 0,
-  //     sepia: 0,
-  //     invert: 0,
-  //     hueRotate: 0,
-  //     blur: 0,
-  //     sharpen: 0,
-  //     emboss: 0,
-  //     opacity: 1,
-  //     noise: 0,
-  //   });
-  //   setFormat("image/png");
-  //   setQuality(0.92);
-  //   jumpTo(0);
-  // }, [setImage, setCropArea, setEffects, setFormat, setQuality, jumpTo]);
-
   return (
     <div className="mx-auto flex h-svh max-w-[1000px] flex-col gap-2 p-2">
       <h1 className="text-center text-2xl font-bold">Image editor</h1>
-      {/* <p style={{ marginTop: 4, color: "#444" }}>
-        Steps: Upload → Crop → Effects → Save. You can jump between steps.
-      </p> */}
 
       <Steps jumpTo={jumpTo} prev={prev} next={next} />
 
