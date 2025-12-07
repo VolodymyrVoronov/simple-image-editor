@@ -46,31 +46,31 @@ const ImageCropper = ({ jumpTo }: ICropArea) => {
   return (
     <section className="flex h-full flex-col gap-4">
       {imageSrc ? (
-        <div className="relative flex h-full w-full flex-col justify-center gap-4">
-          <Cropper
-            image={imageSrc}
-            crop={crop}
-            zoom={zoom}
-            aspect={4 / 3}
-            onCropChange={setCrop}
-            onZoomChange={setZoom}
-            onCropComplete={onCropComplete}
+        <>
+          <Range
+            label="Zoom"
+            min={1}
+            max={3}
+            step={0.01}
+            value={zoom}
+            onChange={(v) => setZoom(v)}
           />
-        </div>
+
+          <div className="relative h-full w-full">
+            <Cropper
+              image={imageSrc}
+              crop={crop}
+              zoom={zoom}
+              aspect={4 / 3}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+          </div>
+        </>
       ) : (
         <div>No image uploaded yet.</div>
       )}
-
-      <div className="flex w-full flex-col">
-        <Range
-          label="Zoom"
-          min={1}
-          max={3}
-          step={0.01}
-          value={zoom}
-          onChange={(v) => setZoom(v)}
-        />
-      </div>
 
       <div className="flex flex-row justify-center gap-2">
         <Button onClick={() => jumpTo(0)} aria-label="Back to Upload">

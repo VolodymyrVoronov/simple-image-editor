@@ -30,11 +30,11 @@ const Effects = ({ jumpTo }: IEffects) => {
   );
 
   return (
-    <section className="flex h-full">
+    <section className="flex h-full w-full">
       {!imageSrc ? (
         <div>Please upload an image first.</div>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <div className="grid grid-cols-[300px_auto] gap-5">
             <div className="flex flex-col gap-5">
               {/* ---------------- BASIC ADJUSTMENTS ---------------- */}

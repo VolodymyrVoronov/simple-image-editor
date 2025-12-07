@@ -34,7 +34,7 @@ const EffectPreview = ({
     <img
       src={url}
       alt="preview"
-      className="max-w-full rounded-2xl object-contain"
+      className="w-full rounded-2xl object-contain"
     />
   );
 };

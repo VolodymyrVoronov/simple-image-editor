@@ -6,18 +6,9 @@ import { useImageStore } from "@/store/imageStore";
 import type { Step } from "@/types";
 import { renderToCanvas } from "@/utils";
 
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import EffectPreview from "./EffectPreview";
-import Range from "./Range";
+import FormatSelector from "./FormatSelector";
+import QualitySelector from "./QualitySelector";
 import { Button } from "./ui/button";
 
 export interface ISaveProps {
@@ -25,18 +16,15 @@ export interface ISaveProps {
 }
 
 const Save = ({ jumpTo }: ISaveProps) => {
-  const [imageSrc, cropArea, effects, format, quality, setFormat, setQuality] =
-    useImageStore(
-      useShallow((state) => [
-        state.imageSrc,
-        state.cropArea,
-        state.effects,
-        state.format,
-        state.quality,
-        state.setFormat,
-        state.setQuality,
-      ]),
-    );
+  const [imageSrc, cropArea, effects, format, quality] = useImageStore(
+    useShallow((state) => [
+      state.imageSrc,
+      state.cropArea,
+      state.effects,
+      state.format,
+      state.quality,
+    ]),
+  );
 
   // Save/download function
   const onSave = useCallback(async () => {
@@ -79,35 +67,8 @@ const Save = ({ jumpTo }: ISaveProps) => {
       ) : (
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-row items-center gap-2">
-              <Label htmlFor="format">Format</Label>
-              <Select value={format} onValueChange={(v) => setFormat(v)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a format" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Format</SelectLabel>
-                    <SelectItem value="image/png">PNG</SelectItem>
-                    <SelectItem value="image/webp">WebP</SelectItem>
-                    <SelectItem value="image/jpeg">JPEG</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex flex-row items-end-safe gap-2">
-              <Range
-                label="Quality (for lossy formats)"
-                value={quality}
-                min={0.1}
-                max={1}
-                step={0.01}
-                onChange={(v) => setQuality(v)}
-              />
-
-              <span>{(quality * 100).toFixed(0)}%</span>
-            </div>
+            <FormatSelector />
+            <QualitySelector />
           </div>
 
           <EffectPreview src={imageSrc} cropArea={cropArea} effects={effects} />
