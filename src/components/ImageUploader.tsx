@@ -1,10 +1,25 @@
-import { Crop, MoveRight, RedoDot, Sparkles } from "lucide-react";
-import { memo, useCallback } from "react";
+import {
+  Crop,
+  Image,
+  MoveRight,
+  RedoDot,
+  Sparkles,
+  Upload,
+} from "lucide-react";
+import { memo, useCallback, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { useImageStore } from "@/store/imageStore";
 import type { Step } from "@/types";
 
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -17,6 +32,8 @@ const ImageUploader = ({ jumpTo }: IImageUploaderProps) => {
   const [imageSrc, setImage] = useImageStore(
     useShallow((state) => [state.imageSrc, state.setImage]),
   );
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Upload handler
   const onFile = useCallback(
@@ -40,6 +57,7 @@ const ImageUploader = ({ jumpTo }: IImageUploaderProps) => {
       <div className="flex flex-col gap-2">
         <Label htmlFor="image-uploader">Upload image</Label>
         <Input
+          ref={inputRef}
           id="image-uploader"
           type="file"
           accept="image/*"
@@ -47,7 +65,27 @@ const ImageUploader = ({ jumpTo }: IImageUploaderProps) => {
         />
       </div>
 
-      {imageSrc && (
+      {!imageSrc ? (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Image />
+            </EmptyMedia>
+            <EmptyTitle>No image uploaded</EmptyTitle>
+            <EmptyDescription>Upload an image to get started.</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => inputRef.current?.click()}
+            >
+              Upload
+              <Upload />
+            </Button>
+          </EmptyContent>
+        </Empty>
+      ) : (
         <div className="flex h-full w-full flex-col justify-center gap-4">
           <img
             src={imageSrc}
