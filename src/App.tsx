@@ -1,15 +1,17 @@
-import { useCallback, useEffect, useRef } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { useImageStore } from "./store/imageStore";
 import type { Step } from "./types";
 import { createStepperInstance } from "./utils";
 
-import Effects from "./components/Effects";
-import ImageCropper from "./components/ImageCropper";
-import ImageUploader from "./components/ImageUploader";
-import Save from "./components/Save";
 import Steps from "./components/Steps";
+import { Spinner } from "./components/ui/spinner";
+
+const Effects = lazy(() => import("./components/Effects"));
+const ImageCropper = lazy(() => import("./components/ImageCropper"));
+const ImageUploader = lazy(() => import("./components/ImageUploader"));
+const Save = lazy(() => import("./components/Save"));
 
 const App = () => {
   const [step, setStep] = useImageStore(
@@ -58,17 +60,25 @@ const App = () => {
       <Steps jumpTo={jumpTo} prev={prev} next={next} />
 
       <main className="flex flex-1 flex-col gap-4 rounded-2xl border p-4">
-        {/* Upload */}
-        {step === 0 && <ImageUploader jumpTo={jumpTo} />}
+        <Suspense
+          fallback={
+            <div className="flex h-full w-full items-center justify-center">
+              <Spinner />
+            </div>
+          }
+        >
+          {/* Upload */}
+          {step === 0 && <ImageUploader jumpTo={jumpTo} />}
 
-        {/* Crop */}
-        {step === 1 && <ImageCropper jumpTo={jumpTo} />}
+          {/* Crop */}
+          {step === 1 && <ImageCropper jumpTo={jumpTo} />}
 
-        {/* Effects */}
-        {step === 2 && <Effects jumpTo={jumpTo} />}
+          {/* Effects */}
+          {step === 2 && <Effects jumpTo={jumpTo} />}
 
-        {/* Save */}
-        {step === 3 && <Save jumpTo={jumpTo} />}
+          {/* Save */}
+          {step === 3 && <Save jumpTo={jumpTo} />}
+        </Suspense>
       </main>
 
       <footer className="flex w-full justify-center">

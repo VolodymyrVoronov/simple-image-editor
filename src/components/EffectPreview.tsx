@@ -35,12 +35,6 @@ const EffectPreview = ({
       src={url}
       alt="preview"
       className="max-w-full rounded-2xl object-contain"
-      // style={{
-      //   marginTop: 12,
-      //   maxWidth: "100%",
-      //   border: "1px solid #ddd",
-      //   borderRadius: 8,
-      // }}
     />
   );
 };
