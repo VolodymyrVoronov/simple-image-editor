@@ -3,29 +3,42 @@ import { persist } from "zustand/middleware";
 
 import type { IImageState } from "@/types";
 
+export const initialState: Omit<
+  IImageState,
+  | "setImage"
+  | "setStep"
+  | "setCropArea"
+  | "setEffects"
+  | "setFormat"
+  | "setQuality"
+  | "resetAll"
+> = {
+  step: 0,
+  imageSrc: null,
+  cropArea: null,
+  effects: {
+    brightness: 1,
+    contrast: 0,
+    saturation: 1,
+    grayscale: 0,
+    pixelate: 0,
+    sepia: 0,
+    invert: 0,
+    hueRotate: 0,
+    blur: 0,
+    sharpen: 0,
+    emboss: 0,
+    opacity: 1,
+    noise: 0,
+  },
+  format: "image/png",
+  quality: 0.92,
+};
+
 export const useImageStore = create<IImageState>()(
   persist(
     (set, get) => ({
-      step: 0,
-      imageSrc: null,
-      cropArea: null,
-      effects: {
-        brightness: 1,
-        contrast: 0,
-        saturation: 1,
-        grayscale: 0,
-        pixelate: 0,
-        sepia: 0,
-        invert: 0,
-        hueRotate: 0,
-        blur: 0,
-        sharpen: 0,
-        emboss: 0,
-        opacity: 1,
-        noise: 0,
-      },
-      format: "image/png",
-      quality: 0.92,
+      ...initialState,
 
       setImage: (src) => set({ imageSrc: src }),
 
@@ -39,6 +52,8 @@ export const useImageStore = create<IImageState>()(
       setFormat: (fmt) => set({ format: fmt }),
 
       setQuality: (q) => set({ quality: q }),
+
+      resetAll: () => set(initialState),
     }),
     { name: "image-editor-app-storage-v1" },
   ),

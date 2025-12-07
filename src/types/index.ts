@@ -29,4 +29,5 @@ export interface IImageState {
   setEffects: (updater: Partial<IImageState["effects"]>) => void;
   setFormat: (fmt: string) => void;
   setQuality: (q: number) => void;
+  resetAll: () => void;
 }

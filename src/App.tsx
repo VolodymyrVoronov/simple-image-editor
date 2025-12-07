@@ -5,11 +5,12 @@ import { useImageStore } from "./store/imageStore";
 import type { Step } from "./types";
 import { createStepperInstance, renderToCanvas } from "./utils";
 
-import { Button } from "./components/ui/button";
-import EffectPreview from "./components/EffectPreview";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import EffectPreview from "./components/EffectPreview";
 import Range from "./components/Range";
+import Steps from "./components/Steps";
+import { Button } from "./components/ui/button";
 
 const App = () => {
   const {
@@ -19,6 +20,7 @@ const App = () => {
     effects,
     format,
     quality,
+
     setImage,
     setStep,
     setCropArea,
@@ -124,95 +126,40 @@ const App = () => {
     });
   }, [imageSrc, cropArea, effects, format, quality]);
 
-  // Reset all
-  const resetAll = useCallback(() => {
-    setImage(null);
-    setCropArea(null);
-    setEffects({
-      brightness: 1,
-      contrast: 1,
-      saturation: 1,
-      pixelate: 0,
-      grayscale: 0,
-    });
-    setFormat("image/png");
-    setQuality(0.92);
-    jumpTo(0);
-  }, [setImage, setCropArea, setEffects, setFormat, setQuality, jumpTo]);
+  // // Reset all
+  // const resetAll = useCallback(() => {
+  //   setImage(null);
+  //   setCropArea(null);
+  //   setEffects({
+  //     brightness: 1,
+  //     contrast: 0,
+  //     saturation: 1,
+  //     grayscale: 0,
+  //     pixelate: 0,
+  //     sepia: 0,
+  //     invert: 0,
+  //     hueRotate: 0,
+  //     blur: 0,
+  //     sharpen: 0,
+  //     emboss: 0,
+  //     opacity: 1,
+  //     noise: 0,
+  //   });
+  //   setFormat("image/png");
+  //   setQuality(0.92);
+  //   jumpTo(0);
+  // }, [setImage, setCropArea, setEffects, setFormat, setQuality, jumpTo]);
 
   return (
-    <div
-      style={{
-        maxWidth: 1000,
-        margin: "1rem auto",
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      <h1 style={{ fontSize: 22 }}>
-        Image editor (React + TS + generators + zustand)
-      </h1>
-      <p style={{ marginTop: 4, color: "#444" }}>
+    <div className="mx-auto flex h-svh max-w-[1000px] flex-col p-2">
+      <h1 className="text-center text-2xl font-bold">Image editor</h1>
+      {/* <p style={{ marginTop: 4, color: "#444" }}>
         Steps: Upload → Crop → Effects → Save. You can jump between steps.
-      </p>
+      </p> */}
+
+      <Steps jumpTo={jumpTo} prev={prev} next={next} />
 
       <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-        <nav
-          style={{
-            minWidth: 220,
-            padding: 12,
-            border: "1px solid #eee",
-            borderRadius: 8,
-          }}
-        >
-          <strong>Steps</strong>
-          <ol>
-            <li style={{ marginTop: 8 }}>
-              <Button onClick={() => jumpTo(0)} disabled={step === 0}>
-                1. Upload
-              </Button>
-            </li>
-            <li style={{ marginTop: 8 }}>
-              <Button onClick={() => jumpTo(1)} disabled={step === 1}>
-                2. Crop
-              </Button>
-            </li>
-            <li style={{ marginTop: 8 }}>
-              <Button onClick={() => jumpTo(2)} disabled={step === 2}>
-                3. Effects
-              </Button>
-            </li>
-            <li style={{ marginTop: 8 }}>
-              <Button onClick={() => jumpTo(3)} disabled={step === 3}>
-                4. Save
-              </Button>
-            </li>
-          </ol>
-
-          <div style={{ marginTop: 12 }}>
-            <Button onClick={prev} style={{ marginRight: 8 }}>
-              Previous (generator)
-            </Button>
-            <Button onClick={next}>Next (generator)</Button>
-            <Button onClick={resetAll} style={{ marginLeft: 8 }}>
-              Reset
-            </Button>
-          </div>
-
-          <div
-            style={{
-              marginTop: 12,
-              paddingTop: 12,
-              borderTop: "1px dashed #ddd",
-            }}
-          >
-            <div>
-              <strong>Saved state</strong>
-            </div>
-            <div>Step: {step}</div>
-            <div>Format: {format}</div>
-          </div>
-        </nav>
-
         <main
           style={{
             flex: 1,
@@ -523,10 +470,9 @@ const App = () => {
         </main>
       </div>
 
-      <footer style={{ marginTop: 12, color: "#666" }}>
+      <footer>
         <small>
-          State is persisted in localStorage. This example is fully typed with
-          TypeScript and uses a small generator to manage step flow.
+          All happens in the browser. No data is sent to the server.
         </small>
       </footer>
     </div>
