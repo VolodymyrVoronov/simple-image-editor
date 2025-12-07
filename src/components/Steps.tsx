@@ -1,7 +1,11 @@
 import {
   ChevronLeft,
   ChevronRight,
+  Crop,
+  ImageUp,
   RotateCcw,
+  Save,
+  Sparkles,
   TriangleAlert,
 } from "lucide-react";
 import { memo, useCallback } from "react";
@@ -10,7 +14,6 @@ import { useShallow } from "zustand/react/shallow";
 import type { Step } from "@/types";
 import { useImageStore } from "../store/imageStore";
 
-import { Button } from "./ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +25,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Dot from "./Dot";
+import { Button } from "./ui/button";
 
 export interface IStepsProps {
   jumpTo: (step: Step) => void;
@@ -46,25 +51,63 @@ const Steps = ({ jumpTo, prev, next }: IStepsProps) => {
 
       <div className="flex flex-row justify-between">
         <ol className="flex flex-row gap-2">
-          <li>
-            <Button onClick={() => jumpTo(0)} disabled={step === 0} size="sm">
-              1. Upload
+          <li className="relative">
+            <Button
+              onClick={() => jumpTo(0)}
+              disabled={step === 0}
+              size="sm"
+              aria-label="Upload image"
+            >
+              Upload
+              <ImageUp />
             </Button>
+
+            {step === 0 && <Dot />}
           </li>
-          <li>
-            <Button onClick={() => jumpTo(1)} disabled={step === 1} size="sm">
-              2. Crop
+
+          <li className="relative">
+            <Button
+              onClick={() => jumpTo(1)}
+              disabled={step === 1 || !imageSrc}
+              size="sm"
+              variant={!imageSrc ? "ghost" : undefined}
+              aria-label="Crop image"
+            >
+              Crop
+              <Crop />
             </Button>
+
+            {step === 1 && <Dot />}
           </li>
-          <li>
-            <Button onClick={() => jumpTo(2)} disabled={step === 2} size="sm">
-              3. Effects
+
+          <li className="relative">
+            <Button
+              onClick={() => jumpTo(2)}
+              disabled={step === 2 || !imageSrc}
+              size="sm"
+              variant={!imageSrc ? "ghost" : undefined}
+              aria-label="Add effects"
+            >
+              Effects
+              <Sparkles />
             </Button>
+
+            {step === 2 && <Dot />}
           </li>
-          <li>
-            <Button onClick={() => jumpTo(3)} disabled={step === 3} size="sm">
-              4. Save
+
+          <li className="relative">
+            <Button
+              onClick={() => jumpTo(3)}
+              disabled={step === 3 || !imageSrc}
+              size="sm"
+              variant={!imageSrc ? "ghost" : undefined}
+              aria-label="Save image"
+            >
+              Save
+              <Save />
             </Button>
+
+            {step === 3 && <Dot />}
           </li>
         </ol>
 
@@ -73,7 +116,7 @@ const Steps = ({ jumpTo, prev, next }: IStepsProps) => {
             onClick={prev}
             aria-label="Previous step"
             size="icon-sm"
-            disabled={step === 0}
+            disabled={step === 0 || !imageSrc}
           >
             <ChevronLeft />
           </Button>
@@ -82,7 +125,7 @@ const Steps = ({ jumpTo, prev, next }: IStepsProps) => {
             onClick={next}
             aria-label="Next step"
             size="icon-sm"
-            disabled={step === 3}
+            disabled={step === 3 || !imageSrc}
           >
             <ChevronRight />
           </Button>

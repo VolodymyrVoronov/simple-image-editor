@@ -5,9 +5,8 @@ import { useImageStore } from "./store/imageStore";
 import type { Step } from "./types";
 import { createStepperInstance, renderToCanvas } from "./utils";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import EffectPreview from "./components/EffectPreview";
+import ImageUploader from "./components/ImageUploader";
 import Range from "./components/Range";
 import Steps from "./components/Steps";
 import { Button } from "./components/ui/button";
@@ -21,7 +20,6 @@ const App = () => {
     format,
     quality,
 
-    setImage,
     setStep,
     setCropArea,
     setEffects,
@@ -63,21 +61,6 @@ const App = () => {
       setStep(value);
     }
   }, [setStep]);
-
-  // Upload handler
-  const onFile = useCallback(
-    (file?: File) => {
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(String(reader.result));
-        // after upload go to crop step (1)
-        jumpTo(1);
-      };
-      reader.readAsDataURL(file);
-    },
-    [setImage, jumpTo],
-  );
 
   // Crop state (react-easy-crop uses relative values)
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -151,7 +134,7 @@ const App = () => {
   // }, [setImage, setCropArea, setEffects, setFormat, setQuality, jumpTo]);
 
   return (
-    <div className="mx-auto flex h-svh max-w-[1000px] flex-col p-2">
+    <div className="mx-auto flex h-svh max-w-[1000px] flex-col gap-2 p-2">
       <h1 className="text-center text-2xl font-bold">Image editor</h1>
       {/* <p style={{ marginTop: 4, color: "#444" }}>
         Steps: Upload → Crop → Effects → Save. You can jump between steps.
@@ -159,316 +142,271 @@ const App = () => {
 
       <Steps jumpTo={jumpTo} prev={prev} next={next} />
 
-      <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-        <main
-          style={{
-            flex: 1,
-            padding: 12,
-            border: "1px solid #eee",
-            borderRadius: 8,
-          }}
-        >
-          {/* Upload */}
-          {step === 0 && (
-            <section>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="image-uploader">Upload image</Label>
-                <Input
-                  id="image-uploader"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => onFile(e.target.files?.[0])}
+      <main className="flex flex-1 flex-col gap-4 rounded-2xl border p-4">
+        {/* Upload */}
+        {step === 0 && <ImageUploader jumpTo={jumpTo} />}
+
+        {/* Crop */}
+        {step === 1 && (
+          <section>
+            <h2>Crop</h2>
+            {imageSrc ? (
+              <div className="relative h-[50svh] w-full">
+                <Cropper
+                  image={imageSrc}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={4 / 3}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
                 />
               </div>
+            ) : (
+              <div>No image uploaded yet.</div>
+            )}
 
-              {imageSrc && (
+            <div style={{ marginTop: 8 }}>
+              <label>Zoom</label>
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.01}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+              />
+            </div>
+            <div style={{ marginTop: 8 }}>
+              <Button onClick={applyCrop} disabled={!imageSrc}>
+                Apply Crop
+              </Button>
+              <Button onClick={skipCrop} style={{ marginLeft: 8 }}>
+                Skip Crop
+              </Button>
+              <Button onClick={() => jumpTo(0)} style={{ marginLeft: 8 }}>
+                Back to Upload
+              </Button>
+            </div>
+          </section>
+        )}
+
+        {/* Effects */}
+        {step === 2 && (
+          <section>
+            <h2>Effects</h2>
+            {!imageSrc ? (
+              <div>Please upload an image first.</div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <EffectPreview
+                  src={imageSrc}
+                  cropArea={cropArea}
+                  effects={effects}
+                />
+                {/* ---------------- BASIC ADJUSTMENTS ---------------- */}
+                <div className="flex flex-col gap-3">
+                  <h3>Basic Adjustments</h3>
+
+                  <Range
+                    label="Brightness"
+                    value={effects.brightness}
+                    min={0}
+                    max={3}
+                    step={0.01}
+                    onChange={(v) => setEffects({ brightness: v })}
+                  />
+
+                  <Range
+                    label="Contrast"
+                    value={effects.contrast}
+                    min={0}
+                    max={3}
+                    step={0.01}
+                    onChange={(v) => setEffects({ contrast: v })}
+                  />
+
+                  <Range
+                    label="Saturation"
+                    value={effects.saturation}
+                    min={0}
+                    max={3}
+                    step={0.01}
+                    onChange={(v) => setEffects({ saturation: v })}
+                  />
+
+                  <Range
+                    label="Grayscale"
+                    value={effects.grayscale}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onChange={(v) => setEffects({ grayscale: v })}
+                  />
+                </div>
+
+                {/* ---------------- COLOR EFFECTS ---------------- */}
+                <div className="flex flex-col gap-3">
+                  <h3>Color Effects</h3>
+
+                  <Range
+                    label="Sepia"
+                    value={effects.sepia}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onChange={(v) => setEffects({ sepia: v })}
+                  />
+
+                  <Range
+                    label="Invert"
+                    value={effects.invert}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onChange={(v) => setEffects({ invert: v })}
+                  />
+
+                  <Range
+                    label="Hue Rotate"
+                    value={effects.hueRotate}
+                    min={-180}
+                    max={180}
+                    step={1}
+                    onChange={(v) => setEffects({ hueRotate: v })}
+                  />
+
+                  <Range
+                    label="Opacity"
+                    value={effects.opacity}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onChange={(v) => setEffects({ opacity: v })}
+                  />
+                </div>
+
+                {/* ---------------- STYLIZATION ---------------- */}
+                <div className="flex flex-col gap-3">
+                  <h3>Stylization</h3>
+
+                  <Range
+                    label="Pixelate"
+                    value={effects.pixelate}
+                    min={0}
+                    max={50}
+                    step={1}
+                    onChange={(v) => setEffects({ pixelate: v })}
+                  />
+
+                  <Range
+                    label="Noise"
+                    value={effects.noise}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    onChange={(v) => setEffects({ noise: v })}
+                  />
+                </div>
+
+                {/* ---------------- BLUR / SHARPEN ---------------- */}
+                <div className="flex flex-col gap-3">
+                  <h3>Blur & Sharpen</h3>
+
+                  <Range
+                    label="Blur"
+                    value={effects.blur}
+                    min={0}
+                    max={10}
+                    step={0.1}
+                    onChange={(v) => setEffects({ blur: v })}
+                  />
+
+                  <Range
+                    label="Sharpen"
+                    value={effects.sharpen}
+                    min={0}
+                    max={3}
+                    step={0.05}
+                    onChange={(v) => setEffects({ sharpen: v })}
+                  />
+
+                  <Range
+                    label="Emboss"
+                    value={effects.emboss}
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    onChange={(v) => setEffects({ emboss: v })}
+                  />
+                </div>
+
                 <div style={{ marginTop: 12 }}>
-                  <img
-                    src={imageSrc}
-                    alt="uploaded"
-                    style={{ maxWidth: "100%", maxHeight: 400 }}
-                  />
-
-                  <div style={{ marginTop: 8 }}>
-                    <Button onClick={() => jumpTo(1)}>Go to Crop</Button>
-                    <Button onClick={() => jumpTo(2)} style={{ marginLeft: 8 }}>
-                      Skip to Effects
-                    </Button>
-                  </div>
+                  <Button onClick={() => jumpTo(1)}>Back to Crop</Button>
+                  <Button onClick={() => jumpTo(3)} style={{ marginLeft: 8 }}>
+                    Go to Save
+                  </Button>
                 </div>
-              )}
-            </section>
-          )}
+              </div>
+            )}
+          </section>
+        )}
 
-          {/* Crop */}
-          {step === 1 && (
-            <section>
-              <h2>Crop</h2>
-              {imageSrc ? (
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    height: 400,
-                    background: "#333",
-                  }}
-                >
-                  <Cropper
-                    image={imageSrc}
-                    crop={crop}
-                    zoom={zoom}
-                    aspect={4 / 3}
-                    onCropChange={setCrop}
-                    onZoomChange={setZoom}
-                    onCropComplete={onCropComplete}
-                  />
-                </div>
-              ) : (
-                <div>No image uploaded yet.</div>
-              )}
-
-              <div style={{ marginTop: 8 }}>
-                <label>Zoom</label>
-                <input
-                  type="range"
-                  min={1}
-                  max={3}
-                  step={0.01}
-                  value={zoom}
-                  onChange={(e) => setZoom(Number(e.target.value))}
+        {/* Save */}
+        {step === 3 && (
+          <section>
+            <h2>Save / Export</h2>
+            {!imageSrc ? (
+              <div>No image to save.</div>
+            ) : (
+              <div>
+                <EffectPreview
+                  src={imageSrc}
+                  cropArea={cropArea}
+                  effects={effects}
                 />
-              </div>
-              <div style={{ marginTop: 8 }}>
-                <Button onClick={applyCrop} disabled={!imageSrc}>
-                  Apply Crop
-                </Button>
-                <Button onClick={skipCrop} style={{ marginLeft: 8 }}>
-                  Skip Crop
-                </Button>
-                <Button onClick={() => jumpTo(0)} style={{ marginLeft: 8 }}>
-                  Back to Upload
-                </Button>
-              </div>
-            </section>
-          )}
-
-          {/* Effects */}
-          {step === 2 && (
-            <section>
-              <h2>Effects</h2>
-              {!imageSrc ? (
-                <div>Please upload an image first.</div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  <EffectPreview
-                    src={imageSrc}
-                    cropArea={cropArea}
-                    effects={effects}
-                  />
-                  {/* ---------------- BASIC ADJUSTMENTS ---------------- */}
-                  <div className="flex flex-col gap-3">
-                    <h3>Basic Adjustments</h3>
-
-                    <Range
-                      label="Brightness"
-                      value={effects.brightness}
-                      min={0}
-                      max={3}
-                      step={0.01}
-                      onChange={(v) => setEffects({ brightness: v })}
-                    />
-
-                    <Range
-                      label="Contrast"
-                      value={effects.contrast}
-                      min={0}
-                      max={3}
-                      step={0.01}
-                      onChange={(v) => setEffects({ contrast: v })}
-                    />
-
-                    <Range
-                      label="Saturation"
-                      value={effects.saturation}
-                      min={0}
-                      max={3}
-                      step={0.01}
-                      onChange={(v) => setEffects({ saturation: v })}
-                    />
-
-                    <Range
-                      label="Grayscale"
-                      value={effects.grayscale}
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      onChange={(v) => setEffects({ grayscale: v })}
-                    />
-                  </div>
-
-                  {/* ---------------- COLOR EFFECTS ---------------- */}
-                  <div className="flex flex-col gap-3">
-                    <h3>Color Effects</h3>
-
-                    <Range
-                      label="Sepia"
-                      value={effects.sepia}
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      onChange={(v) => setEffects({ sepia: v })}
-                    />
-
-                    <Range
-                      label="Invert"
-                      value={effects.invert}
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      onChange={(v) => setEffects({ invert: v })}
-                    />
-
-                    <Range
-                      label="Hue Rotate"
-                      value={effects.hueRotate}
-                      min={-180}
-                      max={180}
-                      step={1}
-                      onChange={(v) => setEffects({ hueRotate: v })}
-                    />
-
-                    <Range
-                      label="Opacity"
-                      value={effects.opacity}
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      onChange={(v) => setEffects({ opacity: v })}
-                    />
-                  </div>
-
-                  {/* ---------------- STYLIZATION ---------------- */}
-                  <div className="flex flex-col gap-3">
-                    <h3>Stylization</h3>
-
-                    <Range
-                      label="Pixelate"
-                      value={effects.pixelate}
-                      min={0}
-                      max={50}
-                      step={1}
-                      onChange={(v) => setEffects({ pixelate: v })}
-                    />
-
-                    <Range
-                      label="Noise"
-                      value={effects.noise}
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      onChange={(v) => setEffects({ noise: v })}
-                    />
-                  </div>
-
-                  {/* ---------------- BLUR / SHARPEN ---------------- */}
-                  <div className="flex flex-col gap-3">
-                    <h3>Blur & Sharpen</h3>
-
-                    <Range
-                      label="Blur"
-                      value={effects.blur}
-                      min={0}
-                      max={10}
-                      step={0.1}
-                      onChange={(v) => setEffects({ blur: v })}
-                    />
-
-                    <Range
-                      label="Sharpen"
-                      value={effects.sharpen}
-                      min={0}
-                      max={3}
-                      step={0.05}
-                      onChange={(v) => setEffects({ sharpen: v })}
-                    />
-
-                    <Range
-                      label="Emboss"
-                      value={effects.emboss}
-                      min={0}
-                      max={1}
-                      step={0.05}
-                      onChange={(v) => setEffects({ emboss: v })}
-                    />
-                  </div>
-
-                  <div style={{ marginTop: 12 }}>
-                    <Button onClick={() => jumpTo(1)}>Back to Crop</Button>
-                    <Button onClick={() => jumpTo(3)} style={{ marginLeft: 8 }}>
-                      Go to Save
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </section>
-          )}
-
-          {/* Save */}
-          {step === 3 && (
-            <section>
-              <h2>Save / Export</h2>
-              {!imageSrc ? (
-                <div>No image to save.</div>
-              ) : (
                 <div>
-                  <EffectPreview
-                    src={imageSrc}
-                    cropArea={cropArea}
-                    effects={effects}
-                  />
-                  <div>
-                    <label>Format</label>
-                    <select
-                      value={format}
-                      onChange={(e) => setFormat(e.target.value)}
-                    >
-                      <option value="image/png">PNG</option>
-                      <option value="image/webp">WebP</option>
-                      <option value="image/jpeg">JPEG</option>
-                    </select>
-                  </div>
-                  <div style={{ marginTop: 8 }}>
-                    <label>Quality (for lossy formats)</label>
-                    <input
-                      type="range"
-                      min={0.1}
-                      max={1}
-                      step={0.01}
-                      value={quality}
-                      onChange={(e) => setQuality(Number(e.target.value))}
-                    />
-                    <span style={{ marginLeft: 8 }}>
-                      {(quality * 100).toFixed(0)}%
-                    </span>
-                  </div>
-
-                  <div style={{ marginTop: 12 }}>
-                    <Button onClick={() => jumpTo(2)}>Back to Effects</Button>
-                    <Button
-                      onClick={async () => {
-                        await onSave();
-                      }}
-                      style={{ marginLeft: 8 }}
-                    >
-                      Download
-                    </Button>
-                  </div>
+                  <label>Format</label>
+                  <select
+                    value={format}
+                    onChange={(e) => setFormat(e.target.value)}
+                  >
+                    <option value="image/png">PNG</option>
+                    <option value="image/webp">WebP</option>
+                    <option value="image/jpeg">JPEG</option>
+                  </select>
                 </div>
-              )}
-            </section>
-          )}
-        </main>
-      </div>
+                <div style={{ marginTop: 8 }}>
+                  <label>Quality (for lossy formats)</label>
+                  <input
+                    type="range"
+                    min={0.1}
+                    max={1}
+                    step={0.01}
+                    value={quality}
+                    onChange={(e) => setQuality(Number(e.target.value))}
+                  />
+                  <span style={{ marginLeft: 8 }}>
+                    {(quality * 100).toFixed(0)}%
+                  </span>
+                </div>
+
+                <div style={{ marginTop: 12 }}>
+                  <Button onClick={() => jumpTo(2)}>Back to Effects</Button>
+                  <Button
+                    onClick={async () => {
+                      await onSave();
+                    }}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+      </main>
 
       <footer>
         <small>
