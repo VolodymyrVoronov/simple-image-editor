@@ -60,6 +60,7 @@ const ImageUploader = ({ jumpTo }: IImageUploaderProps) => {
               Go to Crop
               <MoveRight /> <Crop />
             </Button>
+
             <Button onClick={() => jumpTo(2)} aria-label="Skip to Effects">
               Skip to Effects <RedoDot /> <Sparkles />
             </Button>

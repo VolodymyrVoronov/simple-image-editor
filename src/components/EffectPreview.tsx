@@ -28,18 +28,19 @@ const EffectPreview = ({
     };
   }, [src, cropArea, effects]);
 
-  if (!url) return <div style={{ marginTop: 12 }}>Rendering preview…</div>;
+  if (!url) return <div>Rendering preview…</div>;
 
   return (
     <img
       src={url}
       alt="preview"
-      style={{
-        marginTop: 12,
-        maxWidth: "100%",
-        border: "1px solid #ddd",
-        borderRadius: 8,
-      }}
+      className="max-w-full rounded-2xl object-contain"
+      // style={{
+      //   marginTop: 12,
+      //   maxWidth: "100%",
+      //   border: "1px solid #ddd",
+      //   borderRadius: 8,
+      // }}
     />
   );
 };
