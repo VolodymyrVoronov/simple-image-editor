@@ -74,7 +74,7 @@ const Save = ({ jumpTo }: ISaveProps) => {
           <EffectPreview src={imageSrc} cropArea={cropArea} effects={effects} />
 
           <div className="flex w-full flex-row justify-center gap-2">
-            <Button onClick={() => jumpTo(2)}>
+            <Button onClick={() => jumpTo(2)} aria-label="Back to effects">
               <Sparkles /> <MoveLeft />
               Back to Effects
             </Button>
@@ -83,6 +83,7 @@ const Save = ({ jumpTo }: ISaveProps) => {
               onClick={async () => {
                 await onSave();
               }}
+              aria-label="Download image"
             >
               Download
               <Download />
