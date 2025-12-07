@@ -6,6 +6,7 @@ import type { IImageState } from "@/types";
 export const initialState: Omit<
   IImageState,
   | "setImage"
+  | "setAspect"
   | "setStep"
   | "setCropArea"
   | "setEffects"
@@ -15,6 +16,7 @@ export const initialState: Omit<
 > = {
   step: 0,
   imageSrc: null,
+  aspect: 4 / 3,
   cropArea: null,
   effects: {
     brightness: 1,
@@ -41,6 +43,8 @@ export const useImageStore = create<IImageState>()(
       ...initialState,
 
       setImage: (src) => set({ imageSrc: src }),
+
+      setAspect: (a) => set({ aspect: a }),
 
       setStep: (s) => set({ step: s }),
 

@@ -7,6 +7,7 @@ import { useShallow } from "zustand/shallow";
 import { useImageStore } from "@/store/imageStore";
 import type { Step } from "@/types";
 
+import AspectSelector from "./AspectSelector";
 import Range from "./Range";
 import { Button } from "./ui/button";
 
@@ -15,8 +16,8 @@ export interface ICropArea {
 }
 
 const ImageCropper = ({ jumpTo }: ICropArea) => {
-  const [imageSrc, setCropArea] = useImageStore(
-    useShallow((state) => [state.imageSrc, state.setCropArea]),
+  const [imageSrc, aspect, setCropArea] = useImageStore(
+    useShallow((state) => [state.imageSrc, state.aspect, state.setCropArea]),
   );
 
   // Crop state (react-easy-crop uses relative values)
@@ -46,28 +47,32 @@ const ImageCropper = ({ jumpTo }: ICropArea) => {
   return (
     <section className="flex h-full flex-col gap-4">
       {imageSrc ? (
-        <>
-          <Range
-            label="Zoom"
-            min={1}
-            max={3}
-            step={0.01}
-            value={zoom}
-            onChange={(v) => setZoom(v)}
-          />
+        <div className="grid h-full grid-cols-[auto_1fr] gap-4">
+          <AspectSelector />
 
-          <div className="relative h-full w-full">
-            <Cropper
-              image={imageSrc}
-              crop={crop}
-              zoom={zoom}
-              aspect={4 / 3}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
+          <div className="flex flex-col gap-4">
+            <Range
+              label="Zoom"
+              min={1}
+              max={3}
+              step={0.01}
+              value={zoom}
+              onChange={(v) => setZoom(v)}
             />
+
+            <div className="relative h-full w-full">
+              <Cropper
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={aspect}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+              />
+            </div>
           </div>
-        </>
+        </div>
       ) : (
         <div>No image uploaded yet.</div>
       )}
