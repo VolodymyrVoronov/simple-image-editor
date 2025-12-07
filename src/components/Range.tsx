@@ -19,7 +19,7 @@ const Range = ({ label, value, min, max, step, onChange }: IRangeProps) => {
   return (
     <div className="flex w-full flex-col gap-2">
       <Label htmlFor={`${id}-${label}`}>
-        {label}: {value}
+        {label}: {value.toFixed(2)}
       </Label>
 
       <Slider
