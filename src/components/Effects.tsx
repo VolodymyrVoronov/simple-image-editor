@@ -1,3 +1,4 @@
+import { Crop, MoveLeft, MoveRight, Save } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 
 import { useImageStore } from "@/store/imageStore";
@@ -38,7 +39,7 @@ const Effects = ({ jumpTo }: IEffects) => {
             <div className="flex flex-col gap-5">
               {/* ---------------- BASIC ADJUSTMENTS ---------------- */}
               <div className="flex flex-col gap-3">
-                <h3 className="font-semibold">Basic Adjustments</h3>
+                <h3 className="font-bold">Basic Adjustments</h3>
 
                 <EffectBrightness />
                 <EffectContrast />
@@ -48,7 +49,7 @@ const Effects = ({ jumpTo }: IEffects) => {
 
               {/* ---------------- COLOR EFFECTS ---------------- */}
               <div className="flex flex-col gap-3">
-                <h3 className="font-semibold">Color Effects</h3>
+                <h3 className="font-bold">Color Effects</h3>
 
                 <EffectSepia />
                 <EffectInvert />
@@ -58,7 +59,7 @@ const Effects = ({ jumpTo }: IEffects) => {
 
               {/* ---------------- STYLIZATION ---------------- */}
               <div className="flex flex-col gap-3">
-                <h3 className="font-semibold">Stylization</h3>
+                <h3 className="font-bold">Stylization</h3>
 
                 <EffectPixelate />
                 <EffectNoise />
@@ -66,7 +67,7 @@ const Effects = ({ jumpTo }: IEffects) => {
 
               {/* ---------------- BLUR / SHARPEN ---------------- */}
               <div className="flex flex-col gap-3">
-                <h3 className="font-semibold">Blur & Sharpen</h3>
+                <h3 className="font-bold">Blur & Sharpen</h3>
 
                 <EffectBlur />
                 <EffectSharpen />
@@ -82,9 +83,15 @@ const Effects = ({ jumpTo }: IEffects) => {
           </div>
 
           <div className="flex w-full flex-row justify-center gap-2">
-            <Button onClick={() => jumpTo(1)}>Back to Crop</Button>
-            <Button onClick={() => jumpTo(3)} style={{ marginLeft: 8 }}>
+            <Button onClick={() => jumpTo(1)} aria-label="Back to Crop">
+              <Crop /> <MoveLeft />
+              Back to Crop
+            </Button>
+
+            <Button onClick={() => jumpTo(3)} aria-label="Go to Save">
               Go to Save
+              <MoveRight />
+              <Save />
             </Button>
           </div>
         </div>

@@ -1,9 +1,10 @@
 import { memo } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { useImageStore } from "@/store/imageStore";
+import { initialState, useImageStore } from "@/store/imageStore";
 
 import Range from "./Range";
+import ResetEffectButton from "./ResetEffectButton";
 
 const EffectInvert = () => {
   const [invert, setEffects] = useImageStore(
@@ -11,14 +12,21 @@ const EffectInvert = () => {
   );
 
   return (
-    <Range
-      label="Invert"
-      value={invert}
-      min={0}
-      max={1}
-      step={0.01}
-      onChange={(v) => setEffects({ invert: v })}
-    />
+    <div className="flex w-full flex-row items-center gap-2">
+      <Range
+        label="Invert"
+        value={invert}
+        min={0}
+        max={1}
+        step={0.01}
+        onChange={(v) => setEffects({ invert: v })}
+      />
+
+      <ResetEffectButton
+        label="Reset invert"
+        onClick={() => setEffects({ invert: initialState.effects.invert })}
+      />
+    </div>
   );
 };
 

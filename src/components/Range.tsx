@@ -17,7 +17,7 @@ const Range = ({ label, value, min, max, step, onChange }: IRangeProps) => {
   const id = useId();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex w-full flex-col gap-2">
       <Label htmlFor={`${id}-${label}`}>
         {label}: {value}
       </Label>

@@ -1,9 +1,10 @@
 import { memo } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { useImageStore } from "@/store/imageStore";
+import { initialState, useImageStore } from "@/store/imageStore";
 
 import Range from "./Range";
+import ResetEffectButton from "./ResetEffectButton";
 
 const EffectHueRotate = () => {
   const [hueRotate, setEffects] = useImageStore(
@@ -11,14 +12,23 @@ const EffectHueRotate = () => {
   );
 
   return (
-    <Range
-      label="Hue Rotate"
-      value={hueRotate}
-      min={-180}
-      max={180}
-      step={1}
-      onChange={(v) => setEffects({ hueRotate: v })}
-    />
+    <div className="flex w-full flex-row items-center gap-2">
+      <Range
+        label="Hue Rotate"
+        value={hueRotate}
+        min={-180}
+        max={180}
+        step={1}
+        onChange={(v) => setEffects({ hueRotate: v })}
+      />
+
+      <ResetEffectButton
+        label="Reset hue rotate"
+        onClick={() =>
+          setEffects({ hueRotate: initialState.effects.hueRotate })
+        }
+      />
+    </div>
   );
 };
 
