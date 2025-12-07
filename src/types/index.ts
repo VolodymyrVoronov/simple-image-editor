@@ -9,8 +9,16 @@ export interface IImageState {
     brightness: number;
     contrast: number;
     saturation: number;
-    pixelate: number;
     grayscale: number;
+    pixelate: number;
+    sepia: number;
+    invert: number;
+    hueRotate: number;
+    blur: number;
+    sharpen: number;
+    emboss: number;
+    opacity: number;
+    noise: number;
   };
   format: string;
   quality: number;

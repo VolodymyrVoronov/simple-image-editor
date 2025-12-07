@@ -7,6 +7,9 @@ import { createStepperInstance, renderToCanvas } from "./utils";
 
 import { Button } from "./components/ui/button";
 import EffectPreview from "./components/EffectPreview";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Range from "./components/Range";
 
 const App = () => {
   const {
@@ -221,12 +224,16 @@ const App = () => {
           {/* Upload */}
           {step === 0 && (
             <section>
-              <h2>Upload image</h2>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => onFile(e.target.files?.[0])}
-              />
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="image-uploader">Upload image</Label>
+                <Input
+                  id="image-uploader"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => onFile(e.target.files?.[0])}
+                />
+              </div>
+
               {imageSrc && (
                 <div style={{ marginTop: 12 }}>
                   <img
@@ -234,6 +241,7 @@ const App = () => {
                     alt="uploaded"
                     style={{ maxWidth: "100%", maxHeight: 400 }}
                   />
+
                   <div style={{ marginTop: 8 }}>
                     <Button onClick={() => jumpTo(1)}>Go to Crop</Button>
                     <Button onClick={() => jumpTo(2)} style={{ marginLeft: 8 }}>
@@ -304,88 +312,147 @@ const App = () => {
               {!imageSrc ? (
                 <div>Please upload an image first.</div>
               ) : (
-                <div>
+                <div className="flex flex-col gap-4">
                   <EffectPreview
                     src={imageSrc}
                     cropArea={cropArea}
                     effects={effects}
                   />
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: 12,
-                    }}
-                  >
-                    <div>
-                      <label>Brightness {effects.brightness.toFixed(2)}</label>
-                      <input
-                        type="range"
-                        min={0}
-                        max={2}
-                        step={0.01}
-                        value={effects.brightness}
-                        onChange={(e) =>
-                          setEffects({ brightness: Number(e.target.value) })
-                        }
-                      />
-                    </div>
+                  {/* ---------------- BASIC ADJUSTMENTS ---------------- */}
+                  <div className="flex flex-col gap-3">
+                    <h3>Basic Adjustments</h3>
 
-                    <div>
-                      <label>Contrast {effects.contrast.toFixed(2)}</label>
-                      <input
-                        type="range"
-                        min={0}
-                        max={2}
-                        step={0.01}
-                        value={effects.contrast}
-                        onChange={(e) =>
-                          setEffects({ contrast: Number(e.target.value) })
-                        }
-                      />
-                    </div>
+                    <Range
+                      label="Brightness"
+                      value={effects.brightness}
+                      min={0}
+                      max={3}
+                      step={0.01}
+                      onChange={(v) => setEffects({ brightness: v })}
+                    />
 
-                    <div>
-                      <label>Saturation {effects.saturation.toFixed(2)}</label>
-                      <input
-                        type="range"
-                        min={0}
-                        max={2}
-                        step={0.01}
-                        value={effects.saturation}
-                        onChange={(e) =>
-                          setEffects({ saturation: Number(e.target.value) })
-                        }
-                      />
-                    </div>
+                    <Range
+                      label="Contrast"
+                      value={effects.contrast}
+                      min={0}
+                      max={3}
+                      step={0.01}
+                      onChange={(v) => setEffects({ contrast: v })}
+                    />
 
-                    <div>
-                      <label>Grayscale {effects.grayscale.toFixed(2)}</label>
-                      <input
-                        type="range"
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        value={effects.grayscale}
-                        onChange={(e) =>
-                          setEffects({ grayscale: Number(e.target.value) })
-                        }
-                      />
-                    </div>
+                    <Range
+                      label="Saturation"
+                      value={effects.saturation}
+                      min={0}
+                      max={3}
+                      step={0.01}
+                      onChange={(v) => setEffects({ saturation: v })}
+                    />
 
-                    <div style={{ gridColumn: "1 / -1" }}>
-                      <label>Pixelate {effects.pixelate}px</label>
-                      <input
-                        type="range"
-                        min={0}
-                        max={50}
-                        step={1}
-                        value={effects.pixelate}
-                        onChange={(e) =>
-                          setEffects({ pixelate: Number(e.target.value) })
-                        }
-                      />
-                    </div>
+                    <Range
+                      label="Grayscale"
+                      value={effects.grayscale}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      onChange={(v) => setEffects({ grayscale: v })}
+                    />
+                  </div>
+
+                  {/* ---------------- COLOR EFFECTS ---------------- */}
+                  <div className="flex flex-col gap-3">
+                    <h3>Color Effects</h3>
+
+                    <Range
+                      label="Sepia"
+                      value={effects.sepia}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      onChange={(v) => setEffects({ sepia: v })}
+                    />
+
+                    <Range
+                      label="Invert"
+                      value={effects.invert}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      onChange={(v) => setEffects({ invert: v })}
+                    />
+
+                    <Range
+                      label="Hue Rotate"
+                      value={effects.hueRotate}
+                      min={-180}
+                      max={180}
+                      step={1}
+                      onChange={(v) => setEffects({ hueRotate: v })}
+                    />
+
+                    <Range
+                      label="Opacity"
+                      value={effects.opacity}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      onChange={(v) => setEffects({ opacity: v })}
+                    />
+                  </div>
+
+                  {/* ---------------- STYLIZATION ---------------- */}
+                  <div className="flex flex-col gap-3">
+                    <h3>Stylization</h3>
+
+                    <Range
+                      label="Pixelate"
+                      value={effects.pixelate}
+                      min={0}
+                      max={50}
+                      step={1}
+                      onChange={(v) => setEffects({ pixelate: v })}
+                    />
+
+                    <Range
+                      label="Noise"
+                      value={effects.noise}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      onChange={(v) => setEffects({ noise: v })}
+                    />
+                  </div>
+
+                  {/* ---------------- BLUR / SHARPEN ---------------- */}
+                  <div className="flex flex-col gap-3">
+                    <h3>Blur & Sharpen</h3>
+
+                    <Range
+                      label="Blur"
+                      value={effects.blur}
+                      min={0}
+                      max={10}
+                      step={0.1}
+                      onChange={(v) => setEffects({ blur: v })}
+                    />
+
+                    <Range
+                      label="Sharpen"
+                      value={effects.sharpen}
+                      min={0}
+                      max={3}
+                      step={0.05}
+                      onChange={(v) => setEffects({ sharpen: v })}
+                    />
+
+                    <Range
+                      label="Emboss"
+                      value={effects.emboss}
+                      min={0}
+                      max={1}
+                      step={0.05}
+                      onChange={(v) => setEffects({ emboss: v })}
+                    />
                   </div>
 
                   <div style={{ marginTop: 12 }}>
