@@ -13,7 +13,7 @@ const QualitySelector = () => {
   return (
     <div className="flex flex-row items-end-safe gap-2">
       <Range
-        label="Quality (for lossy formats)"
+        label="Quality"
         value={quality}
         min={0.1}
         max={1}

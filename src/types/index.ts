@@ -32,4 +32,5 @@ export interface IImageState {
   setFormat: (fmt: string) => void;
   setQuality: (q: number) => void;
   resetAll: () => void;
+  resetAllEffects: () => void;
 }

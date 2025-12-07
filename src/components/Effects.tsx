@@ -19,6 +19,7 @@ import EffectSaturation from "./EffectSaturation";
 import EffectSepia from "./EffectSepia";
 import EffectSharpen from "./EffectSharpen";
 import { Button } from "./ui/button";
+import ResetAllEffectsButton from "./ResetAllEffectsButton";
 
 export interface IEffects {
   jumpTo: (step: Step) => void;
@@ -73,6 +74,8 @@ const Effects = ({ jumpTo }: IEffects) => {
                 <EffectSharpen />
                 <EffectEmboss />
               </div>
+
+              <ResetAllEffectsButton />
             </div>
 
             <EffectPreview

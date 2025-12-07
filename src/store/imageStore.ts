@@ -13,6 +13,7 @@ export const initialState: Omit<
   | "setFormat"
   | "setQuality"
   | "resetAll"
+  | "resetAllEffects"
 > = {
   step: 0,
   imageSrc: null,
@@ -58,6 +59,8 @@ export const useImageStore = create<IImageState>()(
       setQuality: (q) => set({ quality: q }),
 
       resetAll: () => set(initialState),
+
+      resetAllEffects: () => set({ effects: initialState.effects }),
     }),
     { name: "image-editor-app-storage-v1" },
   ),
