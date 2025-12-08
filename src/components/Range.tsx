@@ -10,10 +10,21 @@ export interface IRangeProps {
   max: number;
   step: number;
 
+  shouldUpdateInstantly?: boolean;
+
   onChange: (value: number) => void;
 }
 
-const Range = ({ label, value, min, max, step, onChange }: IRangeProps) => {
+const Range = ({
+  label,
+  value,
+  min,
+  max,
+  step,
+  shouldUpdateInstantly = false,
+
+  onChange,
+}: IRangeProps) => {
   const id = useId();
 
   return (
@@ -27,8 +38,14 @@ const Range = ({ label, value, min, max, step, onChange }: IRangeProps) => {
         min={min}
         max={max}
         step={step}
-        value={[value]}
-        onValueChange={(value) => onChange(value[0])}
+        value={shouldUpdateInstantly ? [value] : undefined}
+        defaultValue={shouldUpdateInstantly ? undefined : [value]}
+        onValueChange={
+          shouldUpdateInstantly ? (value) => onChange(value[0]) : undefined
+        }
+        onValueCommit={
+          shouldUpdateInstantly ? undefined : (value) => onChange(value[0])
+        }
         aria-label={label}
       />
     </div>

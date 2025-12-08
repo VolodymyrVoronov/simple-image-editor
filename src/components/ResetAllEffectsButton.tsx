@@ -1,4 +1,4 @@
-import { TriangleAlert } from "lucide-react";
+import { Eraser, TriangleAlert } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 
 import { useImageStore } from "@/store/imageStore";
@@ -24,8 +24,12 @@ const ResetAllEffectsButton = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" aria-label="Reset All Effects">
-          Reset All Effects
+        <Button
+          variant="outline"
+          className="hover:bg-destructive/10! text-destructive! border-destructive! focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40"
+          aria-label="Reset All Effects"
+        >
+          Reset All Effects <Eraser className="ml-2 size-4" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
