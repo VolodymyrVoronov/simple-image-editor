@@ -19,6 +19,7 @@ const QualitySelector = () => {
         max={1}
         step={0.01}
         shouldUpdateInstantly
+        resettable={false}
         onChange={(v) => setQuality(v)}
       />
 

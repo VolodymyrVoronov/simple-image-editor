@@ -58,6 +58,7 @@ const ImageCropper = ({ jumpTo }: ICropArea) => {
               step={0.01}
               value={zoom}
               shouldUpdateInstantly
+              resettable={false}
               onChange={(v) => setZoom(v)}
             />
 

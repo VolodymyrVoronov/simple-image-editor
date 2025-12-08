@@ -11,6 +11,7 @@ export interface IRangeProps {
   step: number;
 
   shouldUpdateInstantly?: boolean;
+  resettable?: boolean;
 
   onChange: (value: number) => void;
 }
@@ -22,13 +23,17 @@ const Range = ({
   max,
   step,
   shouldUpdateInstantly = false,
+  resettable = true,
 
   onChange,
 }: IRangeProps) => {
   const id = useId();
 
   return (
-    <div key={value} className="flex w-full flex-col gap-2">
+    <div
+      key={resettable ? value : undefined}
+      className="flex w-full flex-col gap-2"
+    >
       <Label htmlFor={`${id}-${label}`}>
         {label}: {value.toFixed(2)}
       </Label>
