@@ -28,7 +28,7 @@ const Range = ({
   const id = useId();
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div key={value} className="flex w-full flex-col gap-2">
       <Label htmlFor={`${id}-${label}`}>
         {label}: {value.toFixed(2)}
       </Label>
