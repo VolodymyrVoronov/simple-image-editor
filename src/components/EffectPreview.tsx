@@ -44,7 +44,7 @@ const EffectPreview = ({
     );
 
   const ZoomComponent = withZoom ? ImageZoom : "div";
-  const withZoomProps = withZoom ? { zoomMargin: 10 } : {};
+  const withZoomProps = withZoom ? { zoomMargin: 10 } : undefined;
 
   return (
     <div className="flex w-full justify-center">
