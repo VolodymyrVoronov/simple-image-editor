@@ -3,6 +3,9 @@ import { memo, useEffect, useState } from "react";
 import type { IImageState } from "@/types";
 import { renderToCanvas } from "@/utils";
 
+import { ImageZoom } from "@/components/kibo-ui/image-zoom";
+import { Spinner } from "./ui/spinner";
+
 const EffectPreview = ({
   src,
   cropArea,
@@ -28,14 +31,24 @@ const EffectPreview = ({
     };
   }, [src, cropArea, effects]);
 
-  if (!url) return <div>Rendering preview…</div>;
+  if (!url)
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2">
+        <Spinner />
+        <span className="text-lg">Rendering preview...</span>
+      </div>
+    );
 
   return (
-    <img
-      src={url}
-      alt="preview"
-      className="w-full rounded-2xl object-contain"
-    />
+    <div className="flex w-full justify-center">
+      <ImageZoom zoomMargin={10}>
+        <img
+          src={url}
+          alt="preview"
+          className="w-full rounded-2xl object-contain"
+        />
+      </ImageZoom>
+    </div>
   );
 };
 

@@ -43,7 +43,11 @@ export const useImageStore = create<IImageState>()(
     (set, get) => ({
       ...initialState,
 
-      setImage: (src) => set({ imageSrc: src }),
+      setImage: (src) => {
+        get().resetAll();
+
+        set({ imageSrc: src });
+      },
 
       setAspect: (a) => set({ aspect: a }),
 
