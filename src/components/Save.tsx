@@ -71,7 +71,12 @@ const Save = ({ jumpTo }: ISaveProps) => {
             <QualitySelector />
           </div>
 
-          <EffectPreview src={imageSrc} cropArea={cropArea} effects={effects} />
+          <EffectPreview
+            src={imageSrc}
+            cropArea={cropArea}
+            effects={effects}
+            withZoom
+          />
 
           <div className="flex w-full flex-row justify-center gap-2">
             <Button onClick={() => jumpTo(2)} aria-label="Back to effects">

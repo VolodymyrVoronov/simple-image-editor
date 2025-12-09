@@ -6,15 +6,19 @@ import { renderToCanvas } from "@/utils";
 import { ImageZoom } from "@/components/kibo-ui/image-zoom";
 import { Spinner } from "./ui/spinner";
 
+export interface IEffectPreviewProps {
+  src: string;
+  cropArea: IImageState["cropArea"];
+  effects: IImageState["effects"];
+  withZoom?: boolean;
+}
+
 const EffectPreview = ({
   src,
   cropArea,
   effects,
-}: {
-  src: string;
-  cropArea: IImageState["cropArea"];
-  effects: IImageState["effects"];
-}) => {
+  withZoom = false,
+}: IEffectPreviewProps) => {
   const [url, setUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,15 +43,18 @@ const EffectPreview = ({
       </div>
     );
 
+  const ZoomComponent = withZoom ? ImageZoom : "div";
+  const withZoomProps = withZoom ? { zoomMargin: 10 } : {};
+
   return (
     <div className="flex w-full justify-center">
-      <ImageZoom zoomMargin={10}>
+      <ZoomComponent {...withZoomProps}>
         <img
           src={url}
           alt="preview"
           className="w-full rounded-2xl object-contain"
         />
-      </ImageZoom>
+      </ZoomComponent>
     </div>
   );
 };
